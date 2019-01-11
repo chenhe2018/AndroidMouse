@@ -337,4 +337,16 @@ public class FloatWindowManager {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
+
+    /***************************************************************************
+     * Extra Func
+     **************************************************************************/
+
+    public void UpdateFloatWindow(int leftright, int updown) {
+        floatView.UpdateViewPosition(leftright, updown);
+    }
+
+    public void UpdateScreen(int up, int down, int left, int right) {
+        floatView.UpdateScreen(up, down, left, right);
+    }
 }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -235,4 +236,45 @@ public class AVCallFloatView extends FrameLayout {
         Log.e(TAG, "x  " + mParams.x + "   y  " + mParams.y);
         windowManager.updateViewLayout(this, mParams);
     }
+
+    /***************************************************************************
+     * Extra Func
+     **************************************************************************/
+    public void UpdateViewPosition(int lr, int ud) {
+        // left-right  [+,-]
+        // up-down     [+,-]
+        xInView -= lr;
+        yInView -= ud;
+        // format
+        if(xInView <= ScreenLeft){
+            xInView =ScreenLeft;
+        }
+        if(xInView >= ScreenRight){
+            xInView =ScreenRight;
+        }
+        if(yInView <= ScreenUp){
+            yInView =ScreenUp;
+        }
+        if(yInView >= ScreenDown){
+            yInView =ScreenDown;
+        }
+        // do
+        mParams.x = (int)xInView;
+        mParams.y = (int)yInView;
+        Log.e(TAG, "x = " + mParams.x + ", y = " + mParams.y);
+        windowManager.updateViewLayout(this, mParams);
+    }
+
+    private float ScreenUp;
+    private float ScreenDown;
+    private float ScreenLeft;
+    private float ScreenRight;
+
+    public void UpdateScreen(int up, int down, int left, int right){
+        ScreenUp = up;
+        ScreenDown = down;
+        ScreenLeft = left;
+        ScreenRight = right;
+    }
+
 }
