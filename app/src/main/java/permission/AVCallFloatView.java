@@ -6,6 +6,7 @@ package permission;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -241,6 +242,7 @@ public class AVCallFloatView extends FrameLayout {
      * Extra Func
      **************************************************************************/
     public void UpdateViewPosition(int lr, int ud) {
+        UpdateScreen();
         // left-right  [+,-]
         // up-down     [+,-]
         xInView -= lr;
@@ -277,4 +279,13 @@ public class AVCallFloatView extends FrameLayout {
         ScreenRight = right;
     }
 
+    public void UpdateScreen() {
+        Point point = new Point();
+        if(Build.VERSION.SDK_INT < 17) {
+            windowManager.getDefaultDisplay().getSize(point);
+        } else {
+            windowManager.getDefaultDisplay().getRealSize(point);
+        }
+        FloatWindowManager.getInstance().UpdateScreen(0,point.y,0,point.x);
+    }
 }

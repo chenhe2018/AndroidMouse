@@ -1,6 +1,5 @@
 package com.android.mouse;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
@@ -23,54 +21,10 @@ import android.widget.Toast;
 
 import com.pet.mypet.R;
 
-import permission.FloatWindowManager;
+import permission.AccessibilityServiceUtil;
+import permission.FloatWindowUtil;
 
 public class MainActivity extends AppCompatActivity {
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.i("onKeyDown", event.toString()+"["+keyCode+"]");
-        int DefaultSpeed = 25;
-        int leftright = 0;
-        int updown = 0;
-        switch (keyCode){
-            case 96:
-                Toast.makeText(getApplicationContext(), "Btn[A]", Toast.LENGTH_SHORT).show();
-                break;
-            case 97:
-                Toast.makeText(getApplicationContext(), "Btn[B]", Toast.LENGTH_SHORT).show();
-                break;
-            case 19:
-                Toast.makeText(getApplicationContext(), "Btn[up]", Toast.LENGTH_SHORT).show();
-                updown+=DefaultSpeed;
-                break;
-            case 20:
-                Toast.makeText(getApplicationContext(), "Btn[down]", Toast.LENGTH_SHORT).show();
-                updown-=DefaultSpeed;
-                break;
-            case 21:
-                Toast.makeText(getApplicationContext(), "Btn[left]", Toast.LENGTH_SHORT).show();
-                leftright+=DefaultSpeed;
-                break;
-            case 22:
-                Toast.makeText(getApplicationContext(), "Btn[right]", Toast.LENGTH_SHORT).show();
-                leftright-=DefaultSpeed;
-                break;
-            default:
-                return super.onKeyDown(keyCode, event);
-        }
-        // update screen size
-        WindowManager manager = getWindowManager();
-        Point point = new Point();
-        if(Build.VERSION.SDK_INT < 17) {
-            manager.getDefaultDisplay().getSize(point);
-        } else {
-            manager.getDefaultDisplay().getRealSize(point);
-        }
-        FloatWindowManager.getInstance().UpdateScreen(0,point.y,0,point.x);
-        // update float window
-        FloatWindowManager.getInstance().UpdateFloatWindow(leftright, updown);
-        return true;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +49,10 @@ public class MainActivity extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(), "service已开启", Toast.LENGTH_LONG).show();
 //                Intent intent = new Intent(MainActivity.this, PetService.class);
 //                startService(intent);
-                FloatWindowManager.getInstance().applyOrShowFloatWindow(MainActivity.this);
+                // FloatWindowManager.getInstance().applyOrShowFloatWindow(MainActivity.this);
+
+                Intent intent = new Intent(MainActivity.this,MainService.class);
+                startService(intent);
             }
         });
 
@@ -107,11 +64,30 @@ public class MainActivity extends AppCompatActivity {
 //                Intent intent = new Intent();
 //                intent.setAction("com.android.mouse.PetService");
 //                stopService(intent);
-                FloatWindowManager.getInstance().dismissWindow();
+                //FloatWindowManager.getInstance().dismissWindow();
+
+                Intent intent = new Intent(MainActivity.this,MainService.class);
+                stopService(intent);
             }
         });
 
-        Button btn_permission = (Button) findViewById(R.id.permission);
+        Button btn_float_window_permission = (Button) findViewById(R.id.float_window_permission);
+        btn_float_window_permission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloatWindowUtil.getInstance().applyFloatWindow(MainActivity.this);
+            }
+        });
+
+        Button btn_accessibility_service_permission = (Button) findViewById(R.id.accessibility_service_permission);
+        btn_accessibility_service_permission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AccessibilityServiceUtil.getInstance().applyPermission(MainActivity.this);
+            }
+        });
+
+        Button btn_permission = (Button) findViewById(R.id.all_permission);
         btn_permission.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
